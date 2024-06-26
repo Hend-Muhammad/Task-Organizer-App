@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:task_app/firebase_notifications.dart';
 import 'package:task_app/firebase_options.dart';
+import 'package:task_app/local_notification_service.dart';
 import 'package:task_app/views/splach_screen.dart';
 import 'package:task_app/widget/notifcation_screen.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -16,7 +17,9 @@ void main() async {
   const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
   final InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
   flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
+  await Future.wait([
+    LocalNotificationService.init(),
+  ]);
   runApp(const MyApp());
 }
 

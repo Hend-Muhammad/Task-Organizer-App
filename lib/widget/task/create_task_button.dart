@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:task_app/local_notification_service.dart';
 import 'package:task_app/model/task_model.dart';
 import 'package:task_app/provider/date_time_provider.dart';
 import 'package:task_app/provider/radio_provider.dart';
 import 'package:task_app/provider/service_provider.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
-
 
 class CreateTaskButton extends StatelessWidget {
   const CreateTaskButton({
@@ -60,7 +57,6 @@ class CreateTaskButton extends StatelessWidget {
               break;
           }
 
-          // Use userId parameter here
           TaskModel newTask = TaskModel(
             userId: userId,
             title: titleController.text,
@@ -76,9 +72,8 @@ class CreateTaskButton extends StatelessWidget {
 
           await ref.read(serviceProvider).addNewTask(newTask);
 
-          // Schedule reminder notification if reminderDateTime is set
           if (reminderDateTime != null) {
-            await scheduleNotification(newTask);
+            await scheduleNotification(newTask, reminderDateTime!);
           }
 
           titleController.clear();
@@ -94,46 +89,18 @@ class CreateTaskButton extends StatelessWidget {
     );
   }
 
-  Future<void> scheduleNotification(TaskModel task) async {
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin();
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    final InitializationSettings initializationSettings =
-        InitializationSettings(android: initializationSettingsAndroid);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  Future<void> scheduleNotification(TaskModel task, DateTime reminderDateTime) async {
+    await LocalNotificationService.init();
 
-    // Initialize timezone data
-    tz.initializeTimeZones();
-
-    // Convert reminderDateTime to the local timezone
-    tz.TZDateTime scheduledTime = tz.TZDateTime.from(
-      reminderDateTime!,
-      tz.local,
+    TimeOfDay reminderTimeOfDay = TimeOfDay(
+      hour: reminderDateTime.hour,
+      minute: reminderDateTime.minute,
     );
 
-    // Example notification details
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
-      'your_channel_id', // Change this to your channel id
-      'your_channel_name', // Change this to your channel name
-      channelDescription:
-          'your_channel_description', // Change this to your channel description
-    );
-    const NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-
-    // Schedule the notification within a time window
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      task.hashCode,
-      'Reminder: ${task.title}',
-      'Reminder for ${task.title}',
-      scheduledTime,
-      platformChannelSpecifics,
-      androidAllowWhileIdle: true,
-      matchDateTimeComponents: DateTimeComponents.time,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
+    await LocalNotificationService.showScheduledNotification(
+      currentDate: reminderDateTime,
+      scheduledTime: reminderTimeOfDay,
+      taskModel: task,
     );
   }
 }
