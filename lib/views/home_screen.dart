@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:task_app/core/constants/app_colors.dart';
 import 'package:task_app/feature/project/screens/add_new_project.dart';
 import 'package:task_app/widget/common/nav_bar.dart';
 import 'package:task_app/widget/common/custom_bottom_navigation_bar.dart';
@@ -79,21 +80,21 @@ Widget build(BuildContext context) {
 
   return Scaffold(
     key: scaffoldKey,
-    backgroundColor: Theme.of(context).colorScheme.background,
+    //backgroundColor: Theme.of(context).colorScheme.background,
     drawer: NavBar(), // Drawer navigation
     appBar: AppBar(
-      backgroundColor: const Color(0xff8145E5),
+      backgroundColor: AppColors.primary,
       title: _currentUser != null && _isUserDataLoaded && _userData != null
           ? Row(
               children: [
                 CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/raster/avatar-8.png'),
+                  backgroundImage: AssetImage('assets/images/avatar/avatar-8.png'),
                   radius: 25,
                 ),
                 const SizedBox(width: 10),
                 Text(
                   'Hi, ${_userData!['username'] ?? 'User'}!', // Display username if available, otherwise display 'User'
-                  style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                  style: const TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold),
                 ),
               ],
             )
@@ -112,7 +113,7 @@ Widget build(BuildContext context) {
           icon: const Icon(
             Icons.search,
             size: 40,
-            color: Colors.black,
+            color: Colors.white,
           ),
         )
       ],

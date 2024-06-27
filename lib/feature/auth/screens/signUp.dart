@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_app/core/constants/app_colors.dart';
 import 'package:task_app/core/services/firebaseauth1.dart'; // Import your FirebaseAuthService
 import 'package:task_app/views/home_screen.dart'; // Import your HomeScreen
 import 'package:task_app/feature/auth/screens/login_page.dart';
@@ -51,7 +52,7 @@ class _SignUpPageState extends State<SignUpPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text("OK"),
+              child: Text("OK", style: TextStyle(color: AppColors.primary)),
             ),
           ],
         ),
@@ -66,24 +67,23 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300], // Set background color
+      backgroundColor: Colors.white, // Set background color
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 50), // Spacer
-                const Icon(
-                  Icons.person_add, // Icon for sign up
-                  size: 100,
-                   color: Colors.black,
+                //const SizedBox(height: 10), // Spacer
+                Image.asset(
+                  'assets/images/onBoarding/auth2.png', // Replace with your image path
+                  height: 280, // Set the desired height
                 ),
-                const SizedBox(height: 50), // Spacer
+                const SizedBox(height: 10), // Spacer
                 Text(
                   'Create an Account', // Title for sign up
                   style: TextStyle(
-                    color: Colors.grey[700],
+                    color: Colors.grey.shade800,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -113,16 +113,16 @@ class _SignUpPageState extends State<SignUpPage> {
                         onTap: () => signUp(context), // Callback function for sign up button
                         text: 'Sign Up', // Text for sign up button
                       ),
-                const SizedBox(height: 50), // Spacer
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SquareTile(imagePath: 'assets/images/google.png'), // Google sign in option
-                    SizedBox(width: 25), // Spacer
-                    SquareTile(imagePath: 'assets/images/apple.png'), // Apple sign in option
-                  ],
-                ),
-                const SizedBox(height: 50), // Spacer
+                const SizedBox(height: 20), // Spacer
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     SquareTile(imagePath: 'assets/images/google.png'), // Google sign in option
+                //     SizedBox(width: 25), // Spacer
+                //     SquareTile(imagePath: 'assets/images/apple.png'), // Apple sign in option
+                //   ],
+                // ),
+                // const SizedBox(height: 50), // Spacer
                 GestureDetector(
                   onTap: () {
   Navigator.pushNamed(context, '/login'); // Go to the login page

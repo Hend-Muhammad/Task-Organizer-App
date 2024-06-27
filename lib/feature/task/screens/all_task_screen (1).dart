@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
+import 'package:task_app/core/constants/app_colors.dart';
 import 'package:task_app/feature/task/model/task_model.dart';
 import 'package:task_app/widget/common/custom_bottom_navigation_bar.dart';
 import 'package:task_app/core/provider/service_provider.dart';
@@ -26,7 +27,7 @@ class _AllTaskScreenState extends ConsumerState<AllTaskScreen> {
     AsyncValue<List<TaskModel>> todoData = ref.watch(userTasksProvider);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xff8145E5),
+        backgroundColor: AppColors.primary,
         title: const Text('All Tasks'),
       ),
       body: Padding(

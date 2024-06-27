@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_app/core/constants/app_colors.dart';
 import 'package:task_app/feature/chat/chat_page.dart';
 
 import 'package:task_app/views/home_screen.dart';
@@ -64,7 +65,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         break;
         }},
         
-backgroundColor: const Color(0xff8145E5), );
+backgroundColor: AppColors.primary, );
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:task_app/core/constants/app_colors.dart';
 import 'package:task_app/core/services/local_notification_service.dart';
 import 'package:task_app/feature/task/model/task_model.dart';
 import 'package:task_app/core/provider/date_time_provider.dart';
@@ -33,7 +34,7 @@ class CreateTaskButton extends StatelessWidget {
     return Expanded(
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xff8145E5),
+          backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(

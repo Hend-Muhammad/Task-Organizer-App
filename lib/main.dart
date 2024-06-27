@@ -15,7 +15,7 @@ void main() async {
   await Firebase.initializeApp();
 
   const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-  final InitializationSettings initializationSettings = const InitializationSettings(android: initializationSettingsAndroid);
+  final InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
   flutterLocalNotificationsPlugin.initialize(initializationSettings);
   await Future.wait([
     LocalNotificationService.init(),
@@ -34,12 +34,12 @@ class MyApp extends StatelessWidget {
     return ProviderScope(
       child: MaterialApp(
         navigatorKey: navigatorKey,
-        theme: ThemeData.dark().copyWith(
-          primaryColor: Colors.grey.shade900, // Set primary dark color
-        ),
+        // theme: ThemeData.dark().copyWith(
+        //   primaryColor: Colors.grey.shade900, // Set primary dark color
+        // ),
         debugShowCheckedModeBanner: false,
         title: AppStrings.appName,
-        home: const SplashScreen(),
+        home: SplashScreen(),
         routes: {
           '/notifications':(context) => const NotifcationScreen(),
               '/login': (context) => LoginPage(),
