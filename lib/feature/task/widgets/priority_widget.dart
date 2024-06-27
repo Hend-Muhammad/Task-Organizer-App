@@ -12,8 +12,7 @@ class PrioritySelectionDialog extends StatelessWidget {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildPriorityOption(context, 'Urgent', Colors.red),
-          _buildPriorityOption(context, 'High', Colors.orange),
+          _buildPriorityOption(context, 'High', Colors.red),
           _buildPriorityOption(context, 'Normal', Colors.blue),
           _buildPriorityOption(context, 'Low', Colors.green),
           _buildPriorityOption(context, 'No Priority', Colors.grey),

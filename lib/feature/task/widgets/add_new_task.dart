@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:task_app/core/constants/app_colors.dart';
 import 'package:task_app/core/constants/app_style.dart';
 import 'package:task_app/feature/task/widgets/category_selection.dart';
 import 'package:task_app/feature/task/widgets/create_task_button.dart';
@@ -86,15 +87,16 @@ class AddNewTaskSheetState extends ConsumerState<AddNewTaskSheet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
-          'New Task Todo',
+          'New Task To do',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.close, color: Colors.white),
+            icon: const Icon(Icons.close, color: Colors.black),
             onPressed: () => Navigator.pop(context),
           ),
         ],
@@ -104,13 +106,13 @@ class AddNewTaskSheetState extends ConsumerState<AddNewTaskSheet> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 30),
           decoration: const BoxDecoration(
-            color: Color(0xff1C1C1C),
+            color: AppColors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Divider(thickness: 1.2, color: Colors.grey),
+              const Divider(thickness: 1.2, color: Colors.black),
               const Gap(12),
               const Text(
                 'Title Task',
@@ -165,7 +167,7 @@ class AddNewTaskSheetState extends ConsumerState<AddNewTaskSheet> {
                 },
                 child: Row(
                   children: [
-                    const Icon(Icons.repeat, color: Colors.white),
+                    const Icon(Icons.repeat, color: Colors.black),
                     const SizedBox(width: 8),
                     Text(
                       selectedRecurring,
@@ -179,7 +181,7 @@ class AddNewTaskSheetState extends ConsumerState<AddNewTaskSheet> {
               const Gap(12),
               Row(
                 children: [
-                  const Icon(Icons.alarm, color: Colors.white),
+                  const Icon(Icons.alarm, color: Colors.black),
                   const SizedBox(width: 8),
                   Text(
                     reminderDateTime != null
@@ -188,7 +190,7 @@ class AddNewTaskSheetState extends ConsumerState<AddNewTaskSheet> {
                     style: AppStyle.headingOne,
                   ),
                   IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.white),
+                    icon: const Icon(Icons.edit, color: Colors.black),
                     onPressed: () => _selectReminderDateTime(context),
                   ),
                 ],

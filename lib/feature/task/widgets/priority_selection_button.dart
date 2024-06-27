@@ -31,7 +31,7 @@ class PrioritySelectionButton extends StatelessWidget {
               fontSize: 18,
                   fontWeight: FontWeight.w700,
 
-              color: selectedPriority != 'No Priority' ? getPriorityColor(selectedPriority) : Colors.white, // Set black color if priority is 'No Priority'
+              color: selectedPriority != 'No Priority' ? getPriorityColor(selectedPriority) : Colors.grey, // Set black color if priority is 'No Priority'
             ),
           ),
         ],

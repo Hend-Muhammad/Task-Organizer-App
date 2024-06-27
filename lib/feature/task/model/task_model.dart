@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart'; // Importing Flutter material package to use widgets
 
 class TaskModel {
   String? docID;
@@ -37,7 +38,7 @@ class TaskModel {
       title: data['titleTask'] ?? '',
       description: data['description'] ?? '',
       category: data['category'] ?? '',
-      dueDate: data['dateTask'] ?? '',
+      dueDate: data['dueDate'] ?? '',
       dueTime: data['timeTask'] ?? '',
       status: data['status'] ?? '',
       isDone: data['isDone'] ?? false,
@@ -54,7 +55,7 @@ class TaskModel {
       'titleTask': title,
       'description': description,
       'category': category,
-      'dateTask': dueDate,
+      'dueDate': dueDate,
       'timeTask': dueTime,
       'status': status,
       'isDone': isDone,
@@ -71,7 +72,7 @@ class TaskModel {
       title: map['titleTask'] as String,
       description: map['description'] as String,
       category: map['category'] as String,
-      dueDate: map['dateTask'] as String,
+      dueDate: map['dueDate'] as String,
       dueTime: map['timeTask'] as String,
       isDone: map['isDone'] as bool,
       status: map['status'] as String,
@@ -79,5 +80,39 @@ class TaskModel {
       tag: map['tag'] as String,
       reminderDateTime: map['reminderDateTime'] as String?, // New field for reminder
     );
+  }
+
+   factory TaskModel.fromJson(Map<String, dynamic> json) {
+    return TaskModel(
+      docID: json['docID'] as String?,
+      userId: json['userId'] ?? '',
+      title: json['titleTask'] ?? '',
+      description: json['description'] ?? '',
+      category: json['category'] ?? '',
+      dueDate: json['dueDate'] ?? '',
+      dueTime: json['timeTask'] ?? '',
+      isDone: json['isDone'] ?? false,
+      status: json['status'] ?? '',
+      priority: json['priority'] ?? '',
+      tag: json['tag'] ?? '',
+      reminderDateTime: json['reminderDateTime'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'docID': docID,
+      'userId': userId,
+      'titleTask': title,
+      'description': description,
+      'category': category,
+      'dueDate': dueDate,
+      'timeTask': dueTime,
+      'status': status,
+      'isDone': isDone,
+      'priority': priority,
+      'tag': tag,
+      'reminderDateTime': reminderDateTime,
+    };
   }
 }

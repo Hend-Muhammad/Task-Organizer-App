@@ -42,13 +42,13 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
       case 0:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          MaterialPageRoute(builder: (context) =>  HomeScreen()),
         );
         break;
       case 1:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const AllTaskScreen()),
+          MaterialPageRoute(builder: (context) =>  AllTaskScreen()),
         );
         break;
         case 2:

@@ -1,309 +1,208 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gap/gap.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:task_app/core/constants/app_colors.dart';
-import 'package:task_app/feature/project/screens/old/add_new_project.dart';
+import 'package:task_app/feature/project/project_item.dart';
+import 'package:task_app/feature/project/project_model.dart';
 import 'package:task_app/widget/common/nav_bar.dart';
 import 'package:task_app/widget/common/custom_bottom_navigation_bar.dart';
 import 'package:task_app/widget/searchBtn.dart';
-import 'package:task_app/feature/task/widgets/add_new_task.dart';
 import 'package:task_app/feature/task/widgets/add_task_button.dart';
+import 'package:task_app/feature/task/model/task_model.dart'; // Import TaskModel
+import 'package:task_app/feature/task/widgets/card_todo_list_widget.dart';
 
-// Import the search page
-
-class HomeScreen extends ConsumerStatefulWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  HomeScreenState createState() => HomeScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class HomeScreenState extends ConsumerState<HomeScreen> {
-  // List to hold the tasks
-  List<String> tasks = [];
+class _HomeScreenState extends State<HomeScreen> {
+  late User? _currentUser;
+  DocumentSnapshot<Map<String, dynamic>>? _userData;
+  late String _userId;
+  bool _isUserDataLoaded = false;
 
-  // Variable to store the image path
-  String projectImagePath = 'assets/images/project.jpeg';
-  var h1 = 120.0;
-  var w1 = 120.0;
-  Color? c1 = Colors.grey[800];
-  
-  //final AuthService _authService = AuthService();
-late User? _currentUser; // Variable to hold the current user
-DocumentSnapshot<Map<String, dynamic>>? _userData; // Variable to hold user data
-late String _userId; // Variable to hold the user
-bool _isUserDataLoaded = false; // Track if user data is loaded
   @override
   void initState() {
     super.initState();
     _getCurrentUser();
   }
 
-  // Method to get current user from FirebaseAuth
-void _getCurrentUser() {
-  User? user = FirebaseAuth.instance.currentUser;
-  setState(() {
-    _currentUser = user;
-    _userId = user?.uid ?? ''; // Assign the user ID if user is not null
-  });
-  if (user != null) {
-    _getUserData(user.uid); // Fetch user data using UID
-  } else {
-    print('No user signed in');
-  }
-}
-
-// Method to fetch user data from Firestore
-void _getUserData(String uid) async {
-  try {
-    DocumentSnapshot<Map<String, dynamic>> userData =
-        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+  void _getCurrentUser() {
+    User? user = FirebaseAuth.instance.currentUser;
     setState(() {
-      _userData = userData;
-      _isUserDataLoaded = true; // Set user data loaded to true
+      _currentUser = user;
+      _userId = user?.uid ?? '';
     });
-    print('User Data: ${_userData?.data()}');
-  } catch (e) {
-    print('Error fetching user data: $e');
+    if (user != null) {
+      _getUserData(user.uid);
+    } else {
+      print('No user signed in');
+    }
   }
-}
+
+  void _getUserData(String uid) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userData =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      setState(() {
+        _userData = userData;
+        _isUserDataLoaded = true;
+      });
+      print('User Data: ${_userData?.data()}');
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
+  }
 
   @override
-Widget build(BuildContext context) {
-  // Fetch todo data using Riverpod
-  //final todoData = ref.watch(userTasksProvider);
+  Widget build(BuildContext context) {
+    var scaffoldKey = GlobalKey<ScaffoldState>();
+    final today = DateFormat('M/dd/yyyy').format(DateTime.now());
 
-  // GlobalKey for Scaffold
-  var scaffoldKey = GlobalKey<ScaffoldState>();
+    print('Today\'s Date: $today'); // Log today's date
 
-  return Scaffold(
-    key: scaffoldKey,
-    //backgroundColor: Theme.of(context).colorScheme.background,
-    drawer: NavBar(), // Drawer navigation
-    appBar: AppBar(
-      backgroundColor: AppColors.primary,
-      title: _currentUser != null && _isUserDataLoaded && _userData != null
-          ? Row(
-              children: [
-                CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/avatar/avatar-8.png'),
-                  radius: 25,
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  'Hi, ${_userData!['username'] ?? 'User'}!', // Display username if available, otherwise display 'User'
-                  style: const TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold),
-                ),
-              ],
-            )
-          : const Text('Loading...'), // Fallback text if user data is not loaded
-      leading: IconButton(
-        icon: const Icon(Icons.list),
-        onPressed: () => scaffoldKey.currentState!.openDrawer(), // Open drawer on button press
-      ),
-      actions: [
-        IconButton(
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => SearchPage(), // Navigate to your search page
-            ));
-          },
-          icon: const Icon(
-            Icons.search,
-            size: 40,
-            color: Colors.white,
-          ),
-        )
-      ],
-    ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Column(
-            children: [
-              const Gap(20), // Widget for spacing
-              // Container for "My Projects" section///////////////////////////////////////////
-              Container(
-                height: 300,
-                decoration: BoxDecoration(
-                  color:c1, // Set background color to gray
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Projects', // Section title
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            'Current Projects', // Subtitle
-                            style: TextStyle(color: Colors.grey[200]),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: SizedBox(
-                          height: h1, // Set the desired height for the image container
-                          width: w1, // Set the desired width for the image container
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                image: AssetImage(projectImagePath),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 10,
-                      right: 10,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue.shade800,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        onPressed: () async {
-                          final newImagePath = 'assets/images/tasko.jpg' ;
-                          final newn = await showModalBottomSheet(
-                            isScrollControlled: true,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            context: context,
-                            builder: (context) => const AddbtnSheett(),
-                          );
-
-                          if (newImagePath != null) {
-                            setState(() {
-                              projectImagePath = newImagePath;
-                              h1=600.0;
-                              w1=600.0;
-                              c1 =Colors.grey[1000];
-                            });
-                          }
-                        },
-                        child: const Text('+ New Project'), // Button text
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Gap(20), // Widget for spacing
-              // ListView for displaying todo items
-              
-              const SizedBox(height: 20), // Widget for spacing
-              // Container for "My Tasks" section
-              Container(
-                height: 300,
-                decoration: BoxDecoration(
-                  color: Colors.grey[800], // Set background color to gray
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'My Tasks', // Section title
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            'Today\'s Tasks', // Subtitle
-                            style: TextStyle(color: Colors.grey[200]),
-                          ),
-                          const SizedBox(height: 10),
-                          
-                          // SizedBox(
-                          //   child: ListView.builder(
-                          //     shrinkWrap: true,
-                          //     itemCount: tasks.length,
-                          //     itemBuilder: (context, index) =>
-                          //         CardTodoListWidget(getIndex: index),
-                          //   ),
-                          // ),
-                        ],
-                      ),
-                    ),
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: SizedBox(
-                          height: 120, // Set the desired height for the image container
-                          width: 120, // Set the desired width for the image container
-                          child: SizedBox(
-                            child: Container(
-                              height: 300, // Set the height to 300
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/tskkkkkkk3.jpeg'),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      
-                    ),
-                    Positioned(
-                      top: 10,
-                      right: 10,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue.shade800,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        onPressed: () => showModalBottomSheet(
-                          isScrollControlled: true,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          context: context,
-                          builder: (context) => AddNewTaskSheet(userId: _userId),
-                        ),
-                        child: const Text('+ New Task'), // Button text
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Gap(20), // Widget for spacing
-              // Add your projects here
-            ],
-          ),
+    return Scaffold(
+      key: scaffoldKey,
+      backgroundColor: Colors.white, // Set the background color to white
+      drawer: NavBar(),
+      appBar: AppBar(
+        backgroundColor: AppColors.primary,
+        title: _currentUser != null && _isUserDataLoaded && _userData != null
+            ? Row(
+                children: [
+                  CircleAvatar(
+                    backgroundImage: AssetImage('assets/images/avatar/avatar-8.png'),
+                    radius: 25,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    'Hi, ${_userData!['username'] ?? 'User'}!',
+                    style: const TextStyle(color: Colors.black, fontSize: 26, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              )
+            : const Text('Loading...'),
+        leading: IconButton(
+          icon: const Icon(Icons.list),
+          onPressed: () => scaffoldKey.currentState!.openDrawer(),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => SearchPage(),
+              ));
+            },
+            icon: const Icon(
+              Icons.search,
+              size: 40,
+              color: Colors.black,
+            ),
+          )
+        ],
       ),
-      
-       floatingActionButton: AddTaskButton(userId: _currentUser!.uid),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: const CustomBottomNavigationBar(),
-       // Custom bottom navigation bar
-    );
-  }
-  
+      body: 
+      SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'Projects',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ),
+            StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              stream: FirebaseFirestore.instance.collection('projects').snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else {
+                  List<Project> projects = snapshot.data!.docs.map((doc) {
+                    return Project.fromJson(doc.data());
+                  }).toList();
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: ProjectListView(projects: projects),
+                  );
+                }
+              },
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                "Today's Tasks",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ),
+            StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              stream: FirebaseFirestore.instance
+                  .collection('tasks')
+                  .where('userId', isEqualTo: _userId)
+                  .where('dueDate', isEqualTo: today) // Filter for today's tasks
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else {
+                  List<TaskModel> tasks = snapshot.data!.docs.map((doc) {
+                    final task = TaskModel.fromFirestore(doc);
+                    print('Task Due Date: ${task.dueDate}'); // Log task due date
+                    return task;
+                  }).toList();
+
+                  if (tasks.isEmpty) {
+                    return Center(
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/images/onBoarding/1.png',
+                            height: 150,
+                          ),
+                          const SizedBox(height: 20),
+                          const Text(
+                            'No tasks for today!',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    );
+                  }else {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 8.0), // Adjust the padding as needed
+    child: ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: tasks.length,
+      itemBuilder: (context, index) {
+        return CardTodoListWidget(task: tasks[index]);
+      },
+    ),
+  );
 }
 
+                }
+              },
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+      floatingActionButton: AddTaskButton(userId: _currentUser!.uid),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: const CustomBottomNavigationBar(),
+    );
+  }
+}

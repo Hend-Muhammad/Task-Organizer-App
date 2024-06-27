@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_app/core/constants/app_colors.dart';
 import 'package:task_app/feature/task/widgets/add_new_task.dart';
 
 class AddTaskButton extends StatelessWidget {
@@ -12,6 +13,7 @@ class AddTaskButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
+      backgroundColor: const Color.fromARGB(255, 227, 169, 130),
       onPressed: () => showModalBottomSheet(
         isScrollControlled: true,
         shape: RoundedRectangleBorder(
@@ -21,7 +23,8 @@ class AddTaskButton extends StatelessWidget {
         builder: (context) => AddNewTaskSheet(userId: userId), 
       ),
       shape: const CircleBorder(),
-      child: const Text('+ Task'),
+      child: const Text('+ Task', style: TextStyle(color: Colors.black,),
+      )
     );
   }
 }

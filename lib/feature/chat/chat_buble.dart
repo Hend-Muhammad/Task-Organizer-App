@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_app/core/constants/app_colors.dart';
 import 'package:task_app/feature/chat/message.dart';
 
 import 'package:task_app/core/constants/constants.dart';
@@ -48,7 +49,7 @@ class ChatBuble2 extends StatelessWidget {
             topRight: Radius.circular(32),
             bottomLeft: Radius.circular(32),
           ),
-          color: Color(0xff006488),
+          color: Color.fromARGB(255, 121, 219, 85),
         ),
         child: Text(
           message.message,
