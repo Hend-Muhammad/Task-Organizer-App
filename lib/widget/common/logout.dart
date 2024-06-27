@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:task_app/views/login_page.dart';
+import 'package:task_app/feature/auth/screens/login_page.dart';
 
 
 class LogoutPage {

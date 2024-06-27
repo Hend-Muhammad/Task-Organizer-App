@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:task_app/chat/chat_page.dart';
+import 'package:task_app/feature/chat/chat_page.dart';
 
 import 'package:task_app/views/home_screen.dart';
-import 'package:task_app/views/task/all_task_screen%20(1).dart';
+import 'package:task_app/feature/task/screens/all_task_screen%20(1).dart';
 
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:task_app/widget/inbox.dart';

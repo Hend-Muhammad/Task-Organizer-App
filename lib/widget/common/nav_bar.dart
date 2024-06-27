@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:task_app/views/dashborad/dashboard.dart';
-import 'package:task_app/views/project/projects_view.dart';
-import 'package:task_app/views/task/all_task_screen%20(1).dart';
-import 'package:task_app/views/task_recommend/RecommendPage.dart';
+import 'package:task_app/feature/dashborad/dashboard.dart';
+import 'package:task_app/feature/project/screens/projects_view.dart';
+import 'package:task_app/feature/task/screens/all_task_screen%20(1).dart';
+import 'package:task_app/feature/task_recommend/RecommendPage.dart';
 import 'package:task_app/widget/Calendar.dart';
 import 'package:task_app/widget/common/logout.dart';
 import 'package:task_app/widget/porfile_folder/profile.dart';

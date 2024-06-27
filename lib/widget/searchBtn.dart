@@ -2,8 +2,8 @@
  import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:task_app/model/task_model.dart';
-import 'package:task_app/widget/task/card_todo_list_widget.dart';
+import 'package:task_app/feature/task/model/task_model.dart';
+import 'package:task_app/feature/task/widgets/card_todo_list_widget.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});

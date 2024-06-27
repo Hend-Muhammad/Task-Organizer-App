@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:task_app/widget/porfile_folder/textBoxPro.dart';
 import 'package:task_app/widget/common/custom_bottom_navigation_bar.dart';
-import 'package:task_app/widget/task/add_task_button.dart';
+import 'package:task_app/feature/task/widgets/add_task_button.dart';
 
 
 class ProfileScreen extends StatefulWidget {
