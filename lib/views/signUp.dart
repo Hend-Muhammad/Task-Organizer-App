@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:task_app/views/firebaseauth1.dart'; // Import your FirebaseAuthService
 import 'package:task_app/views/home_screen.dart'; // Import your HomeScreen
+import 'package:task_app/views/login_page.dart';
 import 'package:task_app/widget/logIn/my_button.dart'; // Import your custom button widget
 import 'package:task_app/widget/logIn/my_textfield.dart'; // Import your custom text field widget
 import 'package:task_app/widget/logIn/square_tile.dart'; // Import your custom square tile widget
@@ -124,8 +125,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(height: 50), // Spacer
                 GestureDetector(
                   onTap: () {
-                    Navigator.pop(context); // Go back to the login page
-                  },
+  Navigator.pushNamed(context, '/login'); // Go to the login page
+},
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

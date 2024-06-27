@@ -21,6 +21,27 @@ class LocalNotificationService {
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: DarwinInitializationSettings(),
     );
+
+    // Request permissions for iOS
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+
+    // Request permissions for macOS
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            MacOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+
     await flutterLocalNotificationsPlugin.initialize(
       settings,
       onDidReceiveNotificationResponse: onTap,
@@ -63,6 +84,11 @@ class LocalNotificationService {
       // If the scheduled time is before the current time, add a day to ensure it's in the future
       scheduledDateTime = scheduledDateTime.add(const Duration(days: 1));
     }
+
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+
+    log('Current Time: $now');
+    log('Scheduled Time: $scheduledDateTime');
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
       taskModel.title.hashCode,
