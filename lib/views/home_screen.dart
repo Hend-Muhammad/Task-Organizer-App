@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:task_app/core/constants/app_colors.dart';
-import 'package:task_app/feature/project/screens/add_new_project.dart';
+import 'package:task_app/feature/project/screens/old/add_new_project.dart';
 import 'package:task_app/widget/common/nav_bar.dart';
 import 'package:task_app/widget/common/custom_bottom_navigation_bar.dart';
 import 'package:task_app/widget/searchBtn.dart';

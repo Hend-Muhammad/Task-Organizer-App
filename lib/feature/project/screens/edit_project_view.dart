@@ -1,15 +1,15 @@
-
-
 import 'package:flutter/material.dart';
-import 'package:task_app/feature/project/widgets/edit_view_body.dart';
+import 'package:task_app/feature/project/widgets/project_deteils.dart';
 
 class EditProjectView extends StatelessWidget {
-  const EditProjectView({super.key});
+  final String projectId;
+
+  const EditProjectView({super.key, required this.projectId});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: EditProjectViewBody(),
+    return Scaffold(
+      body:ProjectDetailsPage(projectId: projectId),
     );
   }
 }

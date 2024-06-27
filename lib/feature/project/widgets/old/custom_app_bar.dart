@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:task_app/feature/project/widgets/custom_icon.dart';
+import 'package:task_app/feature/project/widgets/old/custom_icon.dart';
 
 
 class CustomAppBar extends StatelessWidget {
