@@ -42,6 +42,8 @@ class _NavBarState extends State<NavBar> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+            debugShowCheckedModeBanner: false, // Set this to false to remove the debug banner
+
       home: Drawer(
         backgroundColor: Colors.grey.shade900,
         child: ListView(
@@ -65,22 +67,10 @@ class _NavBarState extends State<NavBar> {
                   _userData?['email'] ?? 'Loading...',
                   style: TextStyle(color: Colors.white),
                 ),
-                currentAccountPicture: CircleAvatar(
-                  backgroundImage: _userData != null && _userData!['profileImage'] != null
-                      ? NetworkImage(_userData!['profileImage'])
-                      : null,
-                  child: _userData == null || _userData!['profileImage'] == null
-                      ? Icon(Icons.person, size: 50)
-                      : null,
+                currentAccountPicture: CircleAvatar(backgroundImage: AssetImage("assets/images/avatar/avatar-3.png"),
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.blue,
-                  image: DecorationImage(
-                    fit: BoxFit.fill,
-                    image: NetworkImage(
-                      'https://oflutter.com/wp-content/uploads/2021/02/profile-bg3.jpg',
-                    ),
-                  ),
+                  color: Colors.grey.shade900,
                 ),
               ),
             ),
@@ -124,37 +114,6 @@ class _NavBarState extends State<NavBar> {
                 );
               },
             ),
-            Divider(),
-            ListTile(
-              leading: Icon(Icons.recommend_outlined, color: Colors.white),
-              title: Row(
-                children: [
-                  Text('Task Recommend', style: TextStyle(color: Colors.white)),
-                  SizedBox(width: 10),
-                  Container(
-                    width: 1,
-                    color: Colors.grey,
-                    height: 20,
-                  ),
-                  SizedBox(width: 10),
-                  Text(
-                    'soon',
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: Colors.grey,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ],
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => TaskRecommendPage()),
-                );
-              },
-            ),
-            Divider(),
             ListTile(
               leading: Icon(Icons.settings, color: Colors.white),
               title: Text('Settings', style: TextStyle(color: Colors.white)),
