@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:task_app/core/constants/app_colors.dart';
 
 class ChatPage extends StatelessWidget {
+  final TextEditingController _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,7 +16,7 @@ class ChatPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'Project Study Case Chat',
+              'Todo App Project Chat',
               style: TextStyle(color: Colors.white),
             )
           ],
@@ -21,66 +25,30 @@ class ChatPage extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            child: ListView(
-              padding: EdgeInsets.all(16.0),
-              children: [
-                _buildMessage(
-                  isMe: false,
-                  username: 'Sara',
-                  color: Colors.blue,
-                  imageUrl: 'assets/images/avatar/avatar-5.png',
-                  message: 'Hey team, let\'s discuss the study case for the project.',
-                ),
-                _buildMessage(
-                  isMe: true,
-                  username: 'Omer',
-                  color: Colors.green,
-                  imageUrl: 'assets/images/avatar/avatar-3.png',
-                  message: 'Sure! I suggest we start with defining the project scope.',
-                ),
-                _buildMessage(
-                  isMe: false,
-                  username: 'Adam',
-                  color: Colors.orange,
-                  imageUrl: 'assets/images/avatar/avatar-4.png',
-                  message: 'That sounds good. We should also outline the objectives clearly.',
-                ),
-                _buildMessage(
-                  isMe: true,
-                  username: 'Omer',
-                  color: Colors.green,
-                  imageUrl: 'assets/images/avatar/avatar-3.png',
-                  message: 'Agreed. We can then proceed to gather requirements and constraints.',
-                ),
-                _buildMessage(
-                  isMe: false,
-                  username: 'Sara',
-                  color: Colors.blue,
-                  imageUrl: 'assets/images/avatar/avatar-5.png',
-                  message: 'Let\'s also discuss potential risks and mitigation strategies.',
-                ),
-                _buildMessage(
-                  isMe: true,
-                  username: 'Omer',
-                  color: Colors.green,
-                  imageUrl: 'assets/images/avatar/avatar-3.png',
-                  message: 'Absolutely. Risk assessment is crucial for a successful study case.',
-                ),
-                _buildMessage(
-                  isMe: false,
-                  username: 'Adam',
-                  color: Colors.orange,
-                  imageUrl: 'assets/images/avatar/avatar-4.png',
-                  message: 'I\'ll draft an initial outline and share it with the team by tomorrow.',
-                ),
-                _buildMessage(
-                  isMe: true,
-                  username: 'Omer',
-                  color: Colors.green,
-                  imageUrl: 'assets/images/avatar/avatar-3.png',
-                  message: 'Great! Looking forward to it.',
-                ),
-              ],
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance.collection('chat').orderBy('timestamp').snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                var messages = snapshot.data!.docs;
+                List<Widget> messageWidgets = messages.map((message) {
+                  var data = message.data() as Map<String, dynamic>;
+                  return _buildMessage(
+                    isMe: data['uid'] == FirebaseAuth.instance.currentUser!.uid,
+                    username: data['username'],
+                    color: Color(data['color']), // Convert int to Color
+                    imageUrl: data['imageUrl'],
+                    message: data['message'],
+                  );
+                }).toList();
+
+                return ListView(
+                  padding: EdgeInsets.all(16.0),
+                  children: messageWidgets,
+                );
+              },
             ),
           ),
           _buildInputField(),
@@ -116,7 +84,7 @@ class ChatPage extends StatelessWidget {
                   username,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: isMe ? Colors.blue : Colors.green, // Set username color based on isMe
+                    color: color, // Use the color value from Firestore
                   ),
                 ),
                 Container(
@@ -149,37 +117,49 @@ class ChatPage extends StatelessWidget {
   Widget _buildInputField() {
     return Container(
       padding: EdgeInsets.all(16.0),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: 'Send Message',
-          suffixIcon: const Icon(
-            Icons.send,
-            color: AppColors.primary,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(
-              color: AppColors.primary,
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              decoration: InputDecoration(
+                hintText: 'Send Message',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: const BorderSide(
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
+          IconButton(
+            icon: const Icon(Icons.send, color: AppColors.primary),
+            onPressed: _sendMessage,
+          ),
+        ],
       ),
     );
   }
-}
 
-void main() {
-  runApp(MyApp());
-}
+  void _sendMessage() async {
+    if (_controller.text.isEmpty) return;
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: ChatPage(),
-    );
+    var user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await FirebaseFirestore.instance.collection('chat').add({
+        'uid': user.uid,
+        'username': user.displayName ?? 'Anonymous',
+        'message': _controller.text,
+        'timestamp': Timestamp.now(),
+        'color': Colors.green.value, // Store color as int
+        'imageUrl': 'assets/images/avatar/avatar-3.png', // update this based on your app's logic
+      });
+
+      _controller.clear();
+    }
   }
 }
