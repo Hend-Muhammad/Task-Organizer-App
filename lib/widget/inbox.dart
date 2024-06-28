@@ -1,113 +1,118 @@
-// import 'package:flutter/material.dart';
-
-// class InboxPage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Notifications'),
-//         backgroundColor: Color.fromARGB(255, 196, 139, 240), // You can customize the AppBar color here
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             const Text(
-//               'No Notifications Here',
-//               style: TextStyle(
-//                 fontWeight: FontWeight.bold,
-//                 fontSize: 16, // Increase the font size for emphasis
-//               ),
-//             ),
-//             const SizedBox(height: 30),
-//             ElevatedButton(
-//               onPressed: () {
-//                 // Navigate back to the home page
-//                 Navigator.pop(context);
-//               },
-//               child: const Text('Return To Home Page',
-//               style: TextStyle(
-//                 fontSize: 14, // Increase the font size for emphasis
-//               )),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
 import 'package:flutter/material.dart';
-import 'package:task_app/core/constants/app_colors.dart';
-
-import 'package:task_app/widget/common/custom_bottom_navigation_bar.dart';
-
-
 
 class InboxPage extends StatelessWidget {
   const InboxPage({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Notifications'),
-        backgroundColor: AppColors.primary,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search, color: Colors.black,),
-            onPressed: () {
-              // Handle search icon pressed
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.filter_list, color: Colors.black,),
-            onPressed: () {
-              // Handle filter icon pressed
-            },
+      appBar: AppBar(),
+      body: ListView(),
+    );
+  }
+
+  PreferredSizeWidget appBar() {
+    return AppBar(
+      title: Text('Notification Screen'),
+    );
+  }
+
+  Widget listView() {
+    return ListView.separated(
+        itemBuilder: (context, index) {
+          return listViewItem(index);
+        },
+        separatorBuilder: (context, index) {
+          return const Divider(
+            height: 0,
+          );
+        },
+        itemCount: 15);
+  }
+
+  Widget listViewItem(int index) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          prefixIcon(),
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.only(left: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  message(index),
+                  timeAndDate(index),
+                ],
+              ),
+            ),
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/onBoarding/inbox.png',
-              height: 150,
-            ),
-            SizedBox(height: 20),
-            Text(
-              'No notifications here',
-              style: TextStyle(
-                fontSize: 30,
-                color: Colors.grey,
-              ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-  onPressed: () {
-    // Navigate back to the home page
-    Navigator.pop(context);
-  },
-  style: ButtonStyle(
-    backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 241, 209, 161)), // Change background color
-  ),
-  child: Text(
-    'Go Back to Home', // Change button text
-    style: TextStyle(
-      fontSize: 16, // Increase the font size for emphasis
-      color: Colors.black, // Change text color
-    ),
-  ),
-),
-          ],
-        ),
+    );
+  }
+
+  Widget prefixIcon() {
+    return Container(
+      height: 50,
+      width: 50,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.grey.shade300,
       ),
-      //floatingActionButton: const AddTaskButton(), // Add the floating action button
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: const CustomBottomNavigationBar(), // Add the custom bottom navigation bar
+      child: Icon(
+        Icons.notifications,
+        size: 25,
+        color: Colors.grey.shade700,
+      ),
+    );
+  }
+
+  Widget message(int index) {
+    double textSize = 14;
+    return Container(
+      child: RichText(
+        maxLines: 3,
+        overflow: TextOverflow.ellipsis,
+        text: TextSpan(
+            text: 'Message',
+            style: TextStyle(
+                fontSize: textSize,
+                color: Colors.black,
+                fontWeight: FontWeight.bold),
+            children: const [
+              TextSpan(
+                  text: 'Notification Description',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                  ))
+            ]),
+      ),
+    );
+  }
+
+  Widget timeAndDate(int index) {
+    return Container(
+      margin: const EdgeInsets.only(top: 5),
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            '23-01-2021',
+            style: TextStyle(
+              fontSize: 10,
+            ),
+          ),
+          Text(
+            '7-10-2021',
+            style: TextStyle(
+              fontSize: 10,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

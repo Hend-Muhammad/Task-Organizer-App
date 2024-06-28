@@ -7,19 +7,19 @@ class FirebaseService {
   static FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 // Fetch project details from Firestore based on projectId
-  static Future<Project> fetchProject(String projectId) async {
-    try {
-      DocumentSnapshot projectDoc = await _firestore.collection('projects').doc(projectId).get();
-      if (projectDoc.exists) {
-        return Project.fromJson(projectDoc.data() as Map<String, dynamic>);
-      } else {
-        throw Exception('Project not found');
-      }
-    } catch (e) {
-      print('Error fetching project: $e');
-      rethrow; // Throw the error to handle it further up the call stack
-    }
-  }
+  // static Future<Project> fetchProject(String projectId) async {
+  //   try {
+  //     DocumentSnapshot projectDoc = await _firestore.collection('projects').doc(projectId).get();
+  //     if (projectDoc.exists) {
+  //       return Project.fromJson(projectDoc.data() as Map<String, dynamic>);
+  //     } else {
+  //       throw Exception('Project not found');
+  //     }
+  //   } catch (e) {
+  //     print('Error fetching project: $e');
+  //     rethrow; // Throw the error to handle it further up the call stack
+  //   }
+  // }
   
 static Future<List<TaskModel>> fetchTasks(List<String> taskIds) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;

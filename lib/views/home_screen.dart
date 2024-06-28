@@ -11,6 +11,56 @@ import 'package:task_app/widget/searchBtn.dart';
 import 'package:task_app/feature/task/widgets/add_task_button.dart';
 import 'package:task_app/feature/task/model/task_model.dart'; // Import TaskModel
 import 'package:task_app/feature/task/widgets/card_todo_list_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:task_app/feature/project/project_model.dart'; // Adjust the import path based on your project structure
+
+class ProjectCard extends StatelessWidget {
+  final Project project;
+
+  ProjectCard({required this.project});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 300,
+      margin: EdgeInsets.all(10),
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            project.name!,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: Wrap(
+                  spacing: 5,
+                  runSpacing: 5,
+                  children: project.members!.map((member) {
+                    return CircleAvatar(
+                      radius: 15,
+                      backgroundImage: AssetImage(member),
+                      // You can use actual member images here if available
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          LinearProgressIndicator(value: project.progress),
+        ],
+      ),
+    );
+  }
+}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -20,6 +70,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  final List<Project> projects = [
+    Project(
+      name: 'Todo App',
+      members: ['assets/images/avatar/avatar-4.png', 'assets/images/avatar/avatar-5.png', 'assets/images/avatar/avatar-6.png'],
+      progress: 0.75,
+    ),
+    Project(
+      name: 'Course system',
+      members: ['assets/images/avatar/avatar-1.png', 'assets/images/avatar/avatar-2.png', 'assets/images/avatar/avatar-3.png'],
+      progress: 0.4,
+    ),
+  ];
   late User? _currentUser;
   DocumentSnapshot<Map<String, dynamic>>? _userData;
   late String _userId;
@@ -75,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ? Row(
                 children: [
                   CircleAvatar(
-                    backgroundImage: AssetImage('assets/images/avatar/avatar-8.png'),
+                    backgroundImage: AssetImage('assets/images/avatar/avatar-3.png'),
                     radius: 25,
                   ),
                   const SizedBox(width: 10),
@@ -105,46 +168,39 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      body: 
-      SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Projects',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-            StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-              stream: FirebaseFirestore.instance.collection('projects').snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else {
-                  List<Project> projects = snapshot.data!.docs.map((doc) {
-                    return Project.fromJson(doc.data());
-                  }).toList();
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: ProjectListView(projects: projects),
-                  );
-                }
-              },
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                "Today's Tasks",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
+      body: SingleChildScrollView(
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      const SizedBox(height: 20),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Text(
+          'Projects',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
+      SizedBox(
+        height: 200, // Adjust the height as needed
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: projects.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: EdgeInsets.all(10),
+              child: ProjectCard(project: projects[index]),
+            );
+          },
+        ),
+      ),
+      const SizedBox(height: 20),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Text(
+          "Today's Tasks",
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
             StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
               stream: FirebaseFirestore.instance
                   .collection('tasks')

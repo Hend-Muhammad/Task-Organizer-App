@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:fl_chart/fl_chart.dart';
-import 'package:task_app/widget/common/nav_bar.dart';
+import 'package:task_app/core/constants/app_colors.dart';
+import 'package:task_app/widget/common/custom_bottom_navigation_bar.dart';
+
+
 
 class TheDashboard extends StatelessWidget {
   @override
@@ -18,7 +20,7 @@ class Dashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Colors.grey.shade900, // Set background color to black
+        color: AppColors.primary,
         child: Column(
           children: [
             Container(
@@ -32,32 +34,19 @@ class Dashboard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         InkWell(
-                          onTap: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) =>  NavBar()),
-                );
-                          },
-                          child: Icon(
-                            Icons.sort,
-                            color: Color.fromARGB(255, 226, 218, 221), // Change icon color to pink
-                            size: 40,
-                          ),
-                        ),
-                        InkWell(
                           onTap: () {},
                           child: Icon(
-                            Icons.notifications,
-                            color: const Color.fromARGB(255, 244, 235, 246), // Change icon color to purple
-                            size: 40,
+                            Icons.sort,
+                            color: Colors.black,
+                            size: 20,
                           ),
-                        ),
+                        ),              
                       ],
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                      top: 20,
+                      top: 10,
                       left: 10,
                     ),
                     child: Column(
@@ -67,16 +56,7 @@ class Dashboard extends StatelessWidget {
                           "Dashboard",
                           style: TextStyle(
                             fontSize: 30,
-                            color: Colors.white ,// Change text color to yellow
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                        Text(
-                          "project summary",
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white, // Change text color to light blue
+                            color: Colors.black,
                             fontWeight: FontWeight.w500,
                             letterSpacing: 1,
                           ),
@@ -90,7 +70,7 @@ class Dashboard extends StatelessWidget {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade800,
+                  color: Colors.white,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
@@ -115,24 +95,26 @@ class Dashboard extends StatelessWidget {
                           int value = 0;
                           switch (index) {
                             case 0:
-                              backgroundColor = const Color.fromARGB(255, 222, 142, 169); // Change color to pink
+                              backgroundColor = Colors.blue;
                               statusText = "In Progress";
-                              value = 20;
+                              value = 6;
                               break;
                             case 1:
-                              backgroundColor = Color.fromARGB(255, 197, 139, 207); // Change color to purple
+                              backgroundColor = Colors.pink;
                               statusText = "In Review";
-                              value = 15;
+                              value = 8;
                               break;
                             case 2:
-                              backgroundColor = Color.fromARGB(255, 240, 233, 174); // Change color to yellow
+                              backgroundColor =
+                                  Color.fromARGB(255, 118, 107, 3);
                               statusText = "On Hold";
                               value = 10;
                               break;
                             case 3:
-                              backgroundColor = Color.fromARGB(255, 155, 208, 233); // Change color to light blue
+                              backgroundColor =
+                                  const Color.fromARGB(255, 7, 177, 13);
                               statusText = "Completed";
-                              value = 30;
+                              value =15;
                               break;
                             default:
                               backgroundColor = Colors.grey;
@@ -197,17 +179,6 @@ class Dashboard extends StatelessWidget {
                         },
                       ),
                     ),
-                    SizedBox(height: 0),
-                    Text(
-                      "Pie Chart Statistics",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 255, 255, 255),
-                      ),
-                    ),
-                    Icon(Icons.pie_chart),
-                    SizedBox(height: 0),
                     _buildPieChart(context),
                     SizedBox(height: 5),
                     Row(
@@ -260,38 +231,17 @@ class Dashboard extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Add',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month_outlined),
-            label: 'Calendar',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        backgroundColor: Colors.grey.shade800,
-      ),
+bottomNavigationBar: const CustomBottomNavigationBar(),
+
     );
   }
 
   Widget _buildPieChart(BuildContext context) {
     Map<String, int> taskData = {
-      "In Progress": 20,
-      "In Review": 15,
+      "In Progress": 6,
+      "In Review": 8,
       "On Hold": 10,
-      "Completed": 30,
+      "Completed": 15,
     };
 
     List<PieChartSectionData> sections = [];
@@ -335,13 +285,13 @@ class Dashboard extends StatelessWidget {
   Color getCategoryColor(String category) {
     switch (category) {
       case "In Progress":
-        return Color.fromARGB(255, 222, 142, 169); // Pink
+        return Colors.blue;
       case "In Review":
-        return Color.fromARGB(255, 197, 139, 207); // Purple
+        return Colors.pink;
       case "On Hold":
-        return Color.fromARGB(255, 240, 233, 174); // Yellow
+        return Color.fromARGB(255, 118, 107, 3);
       case "Completed":
-        return Color.fromARGB(255, 155, 208, 233);// Baby Blue
+        return Color.fromARGB(255, 7, 177, 13);
       default:
         return Colors.grey;
     }

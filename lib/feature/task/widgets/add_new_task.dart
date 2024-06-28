@@ -15,7 +15,7 @@ import 'package:task_app/feature/task/widgets/textfield_widget.dart';
 
 class AddNewTaskSheet extends ConsumerStatefulWidget {
   final String userId;
-
+  
   const AddNewTaskSheet({Key? key, required this.userId}) : super(key: key);
 
   @override
@@ -27,6 +27,8 @@ class AddNewTaskSheetState extends ConsumerState<AddNewTaskSheet> {
   final TextEditingController descriptionController = TextEditingController();
   String selectedPriority = 'No Priority';
   String selectedProgress = 'TO DO';
+  String assignedTo = 'Assign to';
+
   List<TextEditingController> subtaskControllers = [];
   late TaskProgressSelector taskProgressSelector;
   late String selectedRecurring = 'No Recurring';
@@ -195,6 +197,23 @@ class AddNewTaskSheetState extends ConsumerState<AddNewTaskSheet> {
                   ),
                 ],
               ),
+              const Gap(12),
+const Gap(12),
+InkWell(
+  onTap: () {
+    _selectUser(context);
+  },
+  child: Row(
+    children: [
+      const Icon(Icons.person, color: Colors.black),
+      const SizedBox(width: 8),
+      Text(
+        assignedTo,
+        style: AppStyle.headingOne,
+      ),
+    ],
+  ),
+),
             ],
           ),
         ),
@@ -218,4 +237,40 @@ class AddNewTaskSheetState extends ConsumerState<AddNewTaskSheet> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
+  void _selectUser(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Select User'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              ListTile(
+                title: Text('User 1'),
+                onTap: () {
+                  setState(() {
+                    assignedTo = 'User 1'; // Update assigned user
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                title: Text('User 2'),
+                onTap: () {
+                  setState(() {
+                    assignedTo = 'User 2'; // Update assigned user
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+              // Add more ListTile for more users as needed
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
 }

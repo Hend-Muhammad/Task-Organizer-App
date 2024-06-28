@@ -123,7 +123,7 @@ class _SearchPageState extends State<SearchPage> {
                           return const Center(child: CircularProgressIndicator());
                         }
                         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                          return const Center(child: Text('No tasks found', style:TextStyle(fontSize: 20),));
+                          return const Center(child: Text('No results found', style:TextStyle(fontSize: 20),));
                         }
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

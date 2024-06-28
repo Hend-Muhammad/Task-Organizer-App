@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:task_app/core/constants/app_colors.dart'; // Adjust this import according to your project structure
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({Key? key}) : super(key: key);
@@ -38,6 +39,7 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.primary,
         title: Text('Calendar'),
       ),
       body: Column(
@@ -70,7 +72,7 @@ class _CalendarPageState extends State<CalendarPage> {
             },
             calendarBuilders: CalendarBuilders(
               selectedBuilder: (context, date, events) {
-                final color = _taskColors[date] ?? Theme.of(context).primaryColor;
+                final color = _taskColors[date] ?? AppColors.primary;
                 return Container(
                   margin: const EdgeInsets.all(4.0),
                   alignment: Alignment.center,
@@ -146,12 +148,16 @@ class _CalendarPageState extends State<CalendarPage> {
                       print('Task Name: $taskName, Task Time: $taskTime');
                       // Change color of the day to light pink
                       setState(() {
-                        _taskColors[_selectedDay] = Colors.pink[100]!;
+                        _taskColors[_selectedDay] = AppColors.orange!;
                       });
                       // Clear text field
                       _taskNameController.clear();
                     },
-                    child: Text('Add Task'),
+                    style: ElevatedButton.styleFrom(
+    backgroundColor: AppColors.orange, // Background color
+  ),
+                    child: Text('Add Task', style: TextStyle(color: Colors.black),),
+                    
                   ),
                 ],
               ),
