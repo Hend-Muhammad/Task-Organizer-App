@@ -3,6 +3,7 @@ import 'package:flutter/material.dart'; // Importing Flutter material package to
 
 class TaskModel {
   String? docID;
+    final String assignTo; // Updated field
   final String userId;
   final String title;
   final String description;
@@ -17,6 +18,8 @@ class TaskModel {
 
   TaskModel({
     this.docID,
+        required this.assignTo, // assignTo is required
+
     required this.userId,
     required this.title,
     required this.description,
@@ -35,6 +38,8 @@ class TaskModel {
     return TaskModel(
       docID: doc.id,
       userId: data['userId'] ?? '',
+            assignTo: data['assignTo'] ?? '',
+
       title: data['titleTask'] ?? '',
       description: data['description'] ?? '',
       category: data['category'] ?? '',
@@ -51,6 +56,8 @@ class TaskModel {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'docID': docID,
+            'assignTo': assignTo,
+
       'userId': userId,
       'titleTask': title,
       'description': description,
@@ -68,6 +75,8 @@ class TaskModel {
   factory TaskModel.fromMap(Map<String, dynamic> map) {
     return TaskModel(
       docID: map['docID'] != null ? map['docID'] as String : null,
+            assignTo: map['assignTo'] as String, // Ensure assignTo is correctly assigned
+
       userId: map['userId'] as String,
       title: map['titleTask'] as String,
       description: map['description'] as String,
@@ -85,6 +94,7 @@ class TaskModel {
    factory TaskModel.fromJson(Map<String, dynamic> json) {
     return TaskModel(
       docID: json['docID'] as String?,
+            assignTo: json['assignTo'] ?? '', // Ensure assignTo is correctly assigned
       userId: json['userId'] ?? '',
       title: json['titleTask'] ?? '',
       description: json['description'] ?? '',
@@ -102,6 +112,7 @@ class TaskModel {
   Map<String, dynamic> toJson() {
     return {
       'docID': docID,
+      'assignTo': assignTo,
       'userId': userId,
       'titleTask': title,
       'description': description,

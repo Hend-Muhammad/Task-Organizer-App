@@ -3,8 +3,56 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:task_app/core/constants/app_colors.dart';
 
-class ChatPage extends StatelessWidget {
+class ChatRoomView extends StatefulWidget {
+  final String projectId;
+
+  ChatRoomView({required this.projectId});
+
+  @override
+  _ChatRoomViewState createState() => _ChatRoomViewState();
+}
+
+class _ChatRoomViewState extends State<ChatRoomView> {
   final TextEditingController _controller = TextEditingController();
+  DocumentReference? chatDocument;
+  String projectName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeChat();
+  }
+
+  Future<void> _initializeChat() async {
+    try {
+      // Fetch project details to get the project name
+      var projectSnapshot = await FirebaseFirestore.instance.collection('projects').doc(widget.projectId).get();
+      setState(() {
+        projectName = projectSnapshot.data()?['name'] ?? 'Project';
+      });
+
+      // Check if a chat exists for the given project
+      var chatQuery = await FirebaseFirestore.instance
+          .collection('GroupChats')
+          .where('ProjectID', isEqualTo: widget.projectId)
+          .get();
+
+      if (chatQuery.docs.isEmpty) {
+        // If no chat exists, create a new one
+        chatDocument = FirebaseFirestore.instance.collection('GroupChats').doc();
+        await chatDocument!.set({
+          'ProjectID': widget.projectId,
+          'CreatedAt': Timestamp.now(),
+        });
+      } else {
+        // Use the existing chat
+        chatDocument = chatQuery.docs.first.reference;
+      }
+      setState(() {});
+    } catch (error) {
+      print('Error initializing chat: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,45 +63,47 @@ class ChatPage extends StatelessWidget {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'Todo App Project Chat',
+            Text(
+              '$projectName Project Chat',
               style: TextStyle(color: Colors.white),
             )
           ],
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('chat').orderBy('timestamp').snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
-                }
+      body: chatDocument == null
+          ? Center(child: CircularProgressIndicator())
+          : Column(
+              children: [
+                Expanded(
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: chatDocument!.collection('Messages').orderBy('SentAt').snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Center(child: CircularProgressIndicator());
+                      }
 
-                var messages = snapshot.data!.docs;
-                List<Widget> messageWidgets = messages.map((message) {
-                  var data = message.data() as Map<String, dynamic>;
-                  return _buildMessage(
-                    isMe: data['uid'] == FirebaseAuth.instance.currentUser!.uid,
-                    username: data['username'],
-                    color: Color(data['color']), // Convert int to Color
-                    imageUrl: data['imageUrl'],
-                    message: data['message'],
-                  );
-                }).toList();
+                      var messages = snapshot.data!.docs;
+                      List<Widget> messageWidgets = messages.map((message) {
+                        var data = message.data() as Map<String, dynamic>;
+                        return _buildMessage(
+                          isMe: data['UserID'] == FirebaseAuth.instance.currentUser!.uid,
+                          username: data['Username'],
+                          color: Color(data['Color']),
+                          imageUrl: data['ImageUrl'],
+                          message: data['MessageText'],
+                        );
+                      }).toList();
 
-                return ListView(
-                  padding: EdgeInsets.all(16.0),
-                  children: messageWidgets,
-                );
-              },
+                      return ListView(
+                        padding: EdgeInsets.all(16.0),
+                        children: messageWidgets,
+                      );
+                    },
+                  ),
+                ),
+                _buildInputField(),
+              ],
             ),
-          ),
-          _buildInputField(),
-        ],
-      ),
     );
   }
 
@@ -84,7 +134,7 @@ class ChatPage extends StatelessWidget {
                   username,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: color, // Use the color value from Firestore
+                    color: color,
                   ),
                 ),
                 Container(
@@ -150,13 +200,14 @@ class ChatPage extends StatelessWidget {
 
     var user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      await FirebaseFirestore.instance.collection('chat').add({
-        'uid': user.uid,
-        'username': user.displayName ?? 'Anonymous',
-        'message': _controller.text,
-        'timestamp': Timestamp.now(),
-        'color': Colors.green.value, // Store color as int
-        'imageUrl': 'assets/images/avatar/avatar-3.png', // update this based on your app's logic
+      var messageDoc = chatDocument!.collection('Messages').doc();
+      await messageDoc.set({
+        'UserID': user.uid,
+        'Username': user.displayName ?? 'Anonymous',
+        'MessageText': _controller.text,
+        'SentAt': Timestamp.now(),
+        'Color': Colors.green.value,
+        'ImageUrl': 'assets/images/avatar/avatar-3.png', // Update this based on your app's logic
       });
 
       _controller.clear();

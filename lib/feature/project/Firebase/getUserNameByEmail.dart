@@ -67,4 +67,3 @@ class _UsernameByEmailPageState extends State<UsernameByEmailPage> {
     );
   }
 }
-

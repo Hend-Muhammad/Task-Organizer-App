@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -28,7 +29,7 @@ class AddNewTaskSheetState extends ConsumerState<AddNewTaskSheet> {
   String selectedPriority = 'No Priority';
   String selectedProgress = 'TO DO';
   String assignedTo = 'Assign to';
-
+  final TextEditingController assignToController = TextEditingController();
   List<TextEditingController> subtaskControllers = [];
   late TaskProgressSelector taskProgressSelector;
   late String selectedRecurring = 'No Recurring';
@@ -86,6 +87,37 @@ class AddNewTaskSheetState extends ConsumerState<AddNewTaskSheet> {
     }
   }
 
+  Future<void> _showUserSelectionDialog() async {
+    final QuerySnapshot userSnapshot = await FirebaseFirestore.instance.collection('users').get();
+    final List<String> userEmails = userSnapshot.docs.map((doc) => doc['email'] as String).toList();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select User'),
+          content: Container(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: userEmails.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(userEmails[index]),
+                  onTap: () {
+                    setState(() {
+                      assignToController.text = userEmails[index];
+                    });
+                    Navigator.pop(context);
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -180,7 +212,7 @@ class AddNewTaskSheetState extends ConsumerState<AddNewTaskSheet> {
               ),
               const Gap(12),
               SubtaskSection(subtaskControllers: subtaskControllers),
-              const Gap(12),
+              const Gap(4),
               Row(
                 children: [
                   const Icon(Icons.alarm, color: Colors.black),
@@ -197,23 +229,19 @@ class AddNewTaskSheetState extends ConsumerState<AddNewTaskSheet> {
                   ),
                 ],
               ),
-              const Gap(12),
-const Gap(12),
-InkWell(
-  onTap: () {
-    _selectUser(context);
-  },
-  child: Row(
-    children: [
-      const Icon(Icons.person, color: Colors.black),
-      const SizedBox(width: 8),
-      Text(
-        assignedTo,
-        style: AppStyle.headingOne,
-      ),
-    ],
-  ),
-),
+              const Gap(4),
+              const Text('Assign To', style: AppStyle.headingOne),
+              const Gap(6),
+              InkWell(
+                onTap: _showUserSelectionDialog,
+                child: IgnorePointer(
+                  child: TextFieldWidget(
+                    hintText: 'Select Member',
+                    txtController: assignToController,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 70)
             ],
           ),
         ),
@@ -224,12 +252,13 @@ InkWell(
           padding: const EdgeInsets.all(8.0),
           child: CreateTaskButton(
             ref: ref,
-            userId: widget.userId,
+            userId: widget.userId, // Pass userId here
             titleController: titleController,
             descriptionController: descriptionController,
-            status: selectedProgress,
-            priority: selectedPriority,
-            tag: tag,
+            status: selectedProgress, // Pass status here
+            priority: selectedPriority, // Pass priority here
+            tag: tag, 
+            assignTo: assignToController.text, // Pass assignTo here
             reminderDateTime: reminderDateTime,
           ),
         ),
@@ -237,40 +266,5 @@ InkWell(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
-  void _selectUser(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Select User'),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              ListTile(
-                title: Text('User 1'),
-                onTap: () {
-                  setState(() {
-                    assignedTo = 'User 1'; // Update assigned user
-                  });
-                  Navigator.of(context).pop();
-                },
-              ),
-              ListTile(
-                title: Text('User 2'),
-                onTap: () {
-                  setState(() {
-                    assignedTo = 'User 2'; // Update assigned user
-                  });
-                  Navigator.of(context).pop();
-                },
-              ),
-              // Add more ListTile for more users as needed
-            ],
-          ),
-        ),
-      );
-    },
-  );
 }
 
-}

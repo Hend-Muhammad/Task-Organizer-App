@@ -1,39 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:task_app/feature/project/project_model.dart';
-import 'package:task_app/feature/task/model/task_model.dart';
 
 class FirebaseService {
-  //hend
-  static FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-// Fetch project details from Firestore based on projectId
-  // static Future<Project> fetchProject(String projectId) async {
-  //   try {
-  //     DocumentSnapshot projectDoc = await _firestore.collection('projects').doc(projectId).get();
-  //     if (projectDoc.exists) {
-  //       return Project.fromJson(projectDoc.data() as Map<String, dynamic>);
-  //     } else {
-  //       throw Exception('Project not found');
-  //     }
-  //   } catch (e) {
-  //     print('Error fetching project: $e');
-  //     rethrow; // Throw the error to handle it further up the call stack
-  //   }
-  // }
-  
-static Future<List<TaskModel>> fetchTasks(List<String> taskIds) async {
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    List<TaskModel> tasks = [];
-
-    for (String taskId in taskIds) {
-      DocumentSnapshot taskDoc = await firestore.collection('tasks').doc(taskId).get();
-      if (taskDoc.exists) {
-        tasks.add(TaskModel.fromMap(taskDoc.data() as Map<String, dynamic>));
-      }
-    }
-    return tasks;
-  }
-  //final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<List<Map<String, dynamic>>> getProjects() async {
     try {
@@ -144,5 +112,12 @@ static Future<List<TaskModel>> fetchTasks(List<String> taskIds) async {
     }
   }
 
-
+  void updateTaskStatus(String projectId, task, String newStatus) {}
+   Future<void> deleteProject(String projectId) async {
+    try {
+      await _firestore.collection('projects').doc(projectId).delete();
+    } catch (e) {
+      throw Exception('Failed to delete project: $e');
+    }
+  }
 }

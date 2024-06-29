@@ -12,6 +12,8 @@ class CreateTaskButton extends StatelessWidget {
     Key? key,
     required this.ref,
     required this.userId,
+    required this.assignTo, // Update userId to assignTo
+
     required this.titleController,
     required this.descriptionController,
     required this.status,
@@ -21,6 +23,7 @@ class CreateTaskButton extends StatelessWidget {
   }) : super(key: key);
 
   final WidgetRef ref;
+    final String assignTo; // Update userId to assignTo
   final String userId;
   final TextEditingController titleController;
   final TextEditingController descriptionController;
@@ -60,6 +63,7 @@ class CreateTaskButton extends StatelessWidget {
 
           TaskModel newTask = TaskModel(
             userId: userId,
+            assignTo: assignTo,
             title: titleController.text,
             description: descriptionController.text,
             category: category,

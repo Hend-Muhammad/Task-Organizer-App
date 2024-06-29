@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:task_app/core/constants/app_colors.dart';
-import 'package:task_app/feature/chat/chat_page.dart';
+import 'package:task_app/feature/chat/chat_list.dart';
+import 'package:task_app/feature/chat/chat_room_view.dart';
 
 import 'package:task_app/views/home_screen.dart';
 import 'package:task_app/feature/task/screens/all_task_screen.dart';
@@ -60,7 +61,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         case 3:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) =>  ChatPage()),
+          MaterialPageRoute(builder: (context) =>  ChatListPage()),
         );
         break;
         }},

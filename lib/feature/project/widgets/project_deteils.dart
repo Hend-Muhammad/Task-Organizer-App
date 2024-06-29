@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:task_app/feature/chat/chat_room_view.dart';
 import 'package:task_app/feature/project/Firebase/firebase_service.dart';
-import 'package:task_app/feature/task/widgets/add_new_task.dart';
+import 'package:task_app/core/constants/app_colors.dart';
 
 
+const Color primary = Color(0xff3889C9);
+const Color orange = Color(0xffE29C6E);
 
 class ProjectDetailsPage extends StatefulWidget {
   final String projectId;
@@ -35,15 +38,26 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
     _loadUserData();
     _fetchProjectData();
     _fetchTasks();
+    _generateMemberIcons();
   }
+
+  List<Widget> memberIcons = [];
+  List<String> userImages = [
+    'assets/images/avatar/avatar-1.png',
+    'assets/images/avatar/avatar-2.png',
+    'assets/images/avatar/avatar-3.png',
+    'assets/images/avatar/avatar-4.png',
+    'assets/images/avatar/avatar-5.png',
+    'assets/images/avatar/avatar-6.png',
+    'assets/images/avatar/avatar-7.png',
+    'assets/images/avatar/avatar-8.png',
+    // Add more images here for additional members
+  ];
 
   Future<void> _loadUserData() async {
     _user = FirebaseAuth.instance.currentUser;
     if (_user != null) {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(_user!.uid)
-          .get();
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(_user!.uid).get();
       setState(() {
         _userData = userDoc.data() as Map<String, dynamic>?;
       });
@@ -52,20 +66,17 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
 
   Future<void> _fetchProjectData() async {
     try {
-      DocumentSnapshot projectSnapshot =
-          await FirebaseService().getProjectById(widget.projectId);
+      DocumentSnapshot projectSnapshot = await FirebaseService().getProjectById(widget.projectId);
       if (projectSnapshot.exists) {
         setState(() {
           projectName = projectSnapshot['name'];
           projectDescription = projectSnapshot['description'];
         });
-        String adminName = await FirebaseService()
-            .getAdminNameById(projectSnapshot['adminId']);
+        String adminName = await FirebaseService().getAdminNameById(projectSnapshot['adminId']);
         setState(() {
           projectOwner = adminName;
         });
 
-        // Fetch team members
         List<dynamic> memberEmails = projectSnapshot['teamMembers'];
         List<String> usernames = [];
 
@@ -88,16 +99,12 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
 
   void _fetchTasks() async {
     try {
-      QuerySnapshot taskSnapshot =
-          await FirebaseService().getTasksByProjectId(widget.projectId);
-      List<Map<String, dynamic>> loadedTasks = taskSnapshot.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
-          .toList();
+      QuerySnapshot taskSnapshot = await FirebaseService().getTasksByProjectId(widget.projectId);
+      List<Map<String, dynamic>> loadedTasks = taskSnapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
       setState(() {
         tasks = loadedTasks;
         taskCount = tasks.length;
-        completedTaskCount =
-            tasks.where((task) => task['status'] == 'completed').length;
+        completedTaskCount = tasks.where((task) => task['status'] == 'completed').length;
       });
     } catch (e) {
       print('Error fetching tasks: $e');
@@ -106,24 +113,61 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
 
   void addTask(String title, String member) {
     setState(() {
-      tasks.add({'title': title, 'member': member});
+      tasks.add({'title': title, 'member': member, 'status': 'pending'});
       taskCount++;
     });
   }
 
-  /// Returns an icon based on the first letter of the member's name
-  IconData _getIconForName(String name) {
-    // Using a simple switch-case for demonstration purposes
-    switch (name[0].toUpperCase()) {
-      case 'A':
-        return Icons.all_inclusive;
-      case 'B':
-        return Icons.bug_report;
-      case 'C':
-        return Icons.child_care;
-      default:
-        return Icons.person;
+  void _generateMemberIcons() {
+    memberIcons.clear(); // Clear existing icons to avoid duplicates
+
+    for (int i = 0; i < teamMembers.length; i++) {
+      String imagePath = userImages[i % userImages.length]; // Assuming userImages is a list of image paths
+      memberIcons.add(
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: orange, // Orange background color
+          ),
+          child: CircleAvatar(
+            backgroundImage: AssetImage(imagePath), // Use AssetImage for local images
+            radius: 12,
+          ),
+        ),
+      );
     }
+  }
+
+  Future<void> _initializeChatAndNavigate() async {
+    // Check if a chat exists for the given project
+    var chatQuery = await FirebaseFirestore.instance
+        .collection('GroupChats')
+        .where('ProjectID', isEqualTo: widget.projectId)
+        .get();
+
+    DocumentReference chatDocument;
+
+    if (chatQuery.docs.isEmpty) {
+      // If no chat exists, create a new one
+      chatDocument = FirebaseFirestore.instance.collection('GroupChats').doc();
+      await chatDocument.set({
+        'ProjectID': widget.projectId,
+        'CreatedAt': Timestamp.now(),
+      });
+    } else {
+      // Use the existing chat
+      chatDocument = chatQuery.docs.first.reference;
+    }
+
+    // Navigate to the chat room
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatRoomView(
+          projectId: widget.projectId,
+        ),
+      ),
+    );
   }
 
   @override
@@ -132,9 +176,10 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
       appBar: AppBar(
         title: Text(
           projectName,
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
         ),
         centerTitle: true,
+        backgroundColor: Color(0xff3889C9),
       ),
       body: Container(
         color: Colors.white,
@@ -166,15 +211,13 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
                             lineWidth: 10,
                             percent: taskCount == 0 ? 0 : completedTaskCount / taskCount,
                             center: Text(
-                              taskCount == 0
-                                  ? '0%'
-                                  : '${((completedTaskCount / taskCount) * 100).toStringAsFixed(1)}%',
+                              '${(taskCount == 0 ? 0 : (completedTaskCount / taskCount) * 100).toStringAsFixed(0)}%',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
                               ),
                             ),
-                            progressColor: Color.fromARGB(255, 185, 86, 175),
+                            progressColor: Color(0xffE29C6E),
                           ),
                           const SizedBox(height: 8),
                           Text(
@@ -219,14 +262,14 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
                 child: ListTile(
                   leading: Icon(
                     Icons.group,
-                    color: Colors.purple,
+                    color: Color(0xff3889C9),
                   ),
                   title: Text(
                     'Team Members',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.purple,
+                      color: Color(0xff3889C9),
                     ),
                   ),
                 ),
@@ -238,17 +281,16 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
                   spacing: 8,
                   runSpacing: 8,
                   children: teamMemberNames.map((member) {
+                    String imagePath = userImages[teamMemberNames.indexOf(member) % userImages.length];
                     return ListTile(
                       leading: CircleAvatar(
-                        child: Icon(
-                          _getIconForName(member),
-                          color: const Color.fromARGB(255, 127, 34, 34),
-                        ),
-                        backgroundColor: Colors.purple,
+                        backgroundImage: AssetImage(imagePath),
+                        radius: 20,
+                        child: Text(member[0].toUpperCase()),
                       ),
                       title: Text(
-                        member, // Displaying member username
-                        style: TextStyle(fontSize: 14),
+                        member,
+                        style: TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.7)),
                       ),
                     );
                   }).toList(),
@@ -262,10 +304,7 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
                   children: [
                     const Text(
                       'Tasks',
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: primary),
                     ),
                     const SizedBox(height: 8),
                     tasks.isEmpty
@@ -273,9 +312,7 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               'No tasks available.',
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black.withOpacity(0.5)),
+                              style: TextStyle(fontSize: 16, color: Colors.black.withOpacity(0.5)),
                             ),
                           )
                         : Column(
@@ -285,7 +322,7 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
                                 child: Container(
                                   padding: const EdgeInsets.all(16),
                                   decoration: BoxDecoration(
-                                    color: Colors.purple[50],
+                                    color: Color(0xff3889C9).withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(8),
                                     boxShadow: [
                                       BoxShadow(
@@ -302,7 +339,7 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            task['title'] ?? 'No Title',
+                                            task['title'] ?? 'Untitled',
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
@@ -311,7 +348,7 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
                                           ),
                                           const SizedBox(height: 8),
                                           Text(
-                                            task['member'] ?? 'No Member Assigned',
+                                            task['member'] ?? 'Unassigned',
                                             style: TextStyle(
                                               fontSize: 14,
                                               color: Colors.black.withOpacity(0.5),
@@ -320,12 +357,10 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
                                         ],
                                       ),
                                       Icon(
-                                        task['status'] == 'completed'
-                                            ? Icons.check_circle
-                                            : Icons.circle,
+                                        task['status'] == 'completed' ? Icons.check_circle : Icons.circle,
                                         color: task['status'] == 'completed'
-                                            ? Colors.green
-                                            : Colors.red,
+                                            ? Color.fromARGB(255, 80, 83, 80)
+                                            : Color.fromARGB(255, 91, 89, 89),
                                       ),
                                     ],
                                   ),
@@ -340,8 +375,7 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                 AddNewTaskSheet(userId: widget.projectId), // Pass userId
+                              builder: (context) => AddNewTaskSheet(userId: widget.projectId),
                             ),
                           ).then((_) {
                             _fetchTasks();
@@ -349,11 +383,21 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
                         },
                         child: const Text('Add New Task'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.purple,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 12),
-                          textStyle: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                          backgroundColor: Color(0xff3889C9),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: _initializeChatAndNavigate,
+                        child: const Text('Open Chat'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xff3889C9),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -367,3 +411,83 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
     );
   }
 }
+
+class AddNewTaskSheet extends StatefulWidget {
+  final String userId;
+
+  const AddNewTaskSheet({Key? key, required this.userId}) : super(key: key);
+
+  @override
+  _AddNewTaskSheetState createState() => _AddNewTaskSheetState();
+}
+
+class _AddNewTaskSheetState extends State<AddNewTaskSheet> {
+  String taskTitle = '';
+  TextEditingController assignToController = TextEditingController();
+
+  @override
+  void dispose() {
+    assignToController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Add New Task'),
+        backgroundColor: Color(0xff3889C9),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Task Title',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              onChanged: (value) => taskTitle = value,
+              decoration: InputDecoration(
+                hintText: 'Enter task title',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Assign To',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: assignToController,
+              decoration: InputDecoration(
+                hintText: 'Enter member name',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                String selectedMember = assignToController.text.trim();
+                if (taskTitle.isNotEmpty && selectedMember.isNotEmpty) {
+                  FirebaseService().addTaskToProject(widget.userId, taskTitle, selectedMember);
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('Add Task'),
+              style: ElevatedButton.styleFrom(
+                iconColor: Color(0xff3889C9),
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
