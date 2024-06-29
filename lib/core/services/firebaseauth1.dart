@@ -19,6 +19,7 @@ class AuthService {
           'email': email,
           'username': username,
           'password': password,
+          'profileImage' : 'assets/images/avatar/avatar-3.png',
           // Add other user fields here
         });
 

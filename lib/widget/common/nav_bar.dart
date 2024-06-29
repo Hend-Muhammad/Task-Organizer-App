@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:task_app/feature/dashborad/dashboard.dart';
-import 'package:task_app/feature/project/screens/old/projects_view.dart';
 import 'package:task_app/feature/project/screens/projects_view.dart';
 import 'package:task_app/feature/task/screens/all_task_screen.dart';
-import 'package:task_app/feature/task_recommend/RecommendPage.dart';
 import 'package:task_app/widget/Calendar.dart';
 import 'package:task_app/widget/common/logout.dart';
 import 'package:task_app/widget/porfile_folder/profile.dart';
@@ -22,6 +20,7 @@ class _NavBarState extends State<NavBar> {
 
   User? _user;
   Map<String, dynamic>? _userData;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -32,17 +31,25 @@ class _NavBarState extends State<NavBar> {
   Future<void> _loadUserData() async {
     _user = _auth.currentUser;
     if (_user != null) {
-      DocumentSnapshot userDoc = await _firestore.collection('users').doc(_user!.uid).get();
-      setState(() {
-        _userData = userDoc.data() as Map<String, dynamic>?;
-      });
+      try {
+        DocumentSnapshot userDoc = await _firestore.collection('users').doc(_user!.uid).get();
+        setState(() {
+          _userData = userDoc.data() as Map<String, dynamic>?;
+          _isLoading = false;
+        });
+      } catch (e) {
+        print('Error fetching user data: $e');
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-            debugShowCheckedModeBanner: false, // Set this to false to remove the debug banner
+      debugShowCheckedModeBanner: false, // Remove debug banner
 
       home: Drawer(
         backgroundColor: Colors.grey.shade900,
@@ -58,21 +65,41 @@ class _NavBarState extends State<NavBar> {
                   ),
                 );
               },
-              child: UserAccountsDrawerHeader(
-                accountName: Text(
-                  _userData?['username'] ?? 'Loading...',
-                  style: TextStyle(color: Colors.white),
-                ),
-                accountEmail: Text(
-                  _userData?['email'] ?? 'Loading...',
-                  style: TextStyle(color: Colors.white),
-                ),
-                currentAccountPicture: CircleAvatar(backgroundImage: AssetImage("assets/images/avatar/avatar-3.png"),
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade900,
-                ),
-              ),
+              child: _isLoading
+                  ? UserAccountsDrawerHeader(
+                      accountName: Text(
+                        'Loading...',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      accountEmail: Text(
+                        'Loading...',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      currentAccountPicture: CircleAvatar(
+                        backgroundColor: Colors.grey,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade900,
+                      ),
+                    )
+                  : UserAccountsDrawerHeader(
+                      accountName: Text(
+                        _userData?['username'] ?? 'No username',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      accountEmail: Text(
+                        _userData?['email'] ?? 'No email',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      currentAccountPicture: CircleAvatar(
+                        backgroundImage: _userData?['profileImage'] != null
+                            ? AssetImage(_userData!['profileImage'])
+                            : AssetImage('assets/images/default_avatar.png') as ImageProvider,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade900,
+                      ),
+                    ),
             ),
             ListTile(
               leading: Icon(Icons.checklist_rtl, color: Colors.white),

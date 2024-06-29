@@ -66,7 +66,7 @@ class _ChatRoomViewState extends State<ChatRoomView> {
             Text(
               '$projectName Project Chat',
               style: TextStyle(color: Colors.white),
-            )
+            ),
           ],
         ),
       ),
@@ -89,7 +89,7 @@ class _ChatRoomViewState extends State<ChatRoomView> {
                           isMe: data['UserID'] == FirebaseAuth.instance.currentUser!.uid,
                           username: data['Username'],
                           color: Color(data['Color']),
-                          imageUrl: data['ImageUrl'],
+                          imageUrl: data['ImageUrl'], // Use imageUrl from message data
                           message: data['MessageText'],
                         );
                       }).toList();
@@ -107,6 +107,17 @@ class _ChatRoomViewState extends State<ChatRoomView> {
     );
   }
 
+  Future<String> _getUserImageUrl(String userId) async {
+    try {
+      var userSnapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+      var userData = userSnapshot.data();
+      return userData?['profileImage'] ?? 'assets/images/avatar/avatar-1.png'; // Default image if none is found
+    } catch (e) {
+      print('Error fetching user image URL: $e');
+      return 'assets/images/avatar/avatar-1.png'; // Default image in case of error
+    }
+  }
+
   Widget _buildMessage({
     required bool isMe,
     required String username,
@@ -121,9 +132,28 @@ class _ChatRoomViewState extends State<ChatRoomView> {
         mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
           if (!isMe)
-            CircleAvatar(
-              radius: 20,
-              backgroundImage: AssetImage(imageUrl),
+            FutureBuilder<String>(
+              future: _getUserImageUrl(FirebaseAuth.instance.currentUser!.uid),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.grey[200], // Default background color
+                  );
+                } else if (snapshot.hasData) {
+                  return CircleAvatar(
+                    radius: 20,
+                    backgroundImage: AssetImage(snapshot.data!),
+                    backgroundColor: Colors.grey[200], // Default background color
+                  );
+                } else {
+                  return CircleAvatar(
+                    radius: 20,
+                    backgroundImage: AssetImage('assets/images/avatar/avatar-1.png'), // Default image
+                    backgroundColor: Colors.grey[200], // Default background color
+                  );
+                }
+              },
             ),
           SizedBox(width: 8.0),
           Expanded(
@@ -155,9 +185,28 @@ class _ChatRoomViewState extends State<ChatRoomView> {
             ),
           ),
           if (isMe)
-            CircleAvatar(
-              radius: 20,
-              backgroundImage: AssetImage(imageUrl),
+            FutureBuilder<String>(
+              future: _getUserImageUrl(FirebaseAuth.instance.currentUser!.uid),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.grey[200], // Default background color
+                  );
+                } else if (snapshot.hasData) {
+                  return CircleAvatar(
+                    radius: 20,
+                    backgroundImage: AssetImage(snapshot.data!),
+                    backgroundColor: Colors.grey[200], // Default background color
+                  );
+                } else {
+                  return CircleAvatar(
+                    radius: 20,
+                    backgroundImage:AssetImage(snapshot.data!), // Default image
+                    backgroundColor: Colors.grey[200], // Default background color
+                  );
+                }
+              },
             ),
         ],
       ),
@@ -195,11 +244,13 @@ class _ChatRoomViewState extends State<ChatRoomView> {
     );
   }
 
-  void _sendMessage() async {
+  Future<void> _sendMessage() async {
     if (_controller.text.isEmpty) return;
 
     var user = FirebaseAuth.instance.currentUser;
     if (user != null) {
+      var imageUrl = await _getUserImageUrl(user.uid);
+
       var messageDoc = chatDocument!.collection('Messages').doc();
       await messageDoc.set({
         'UserID': user.uid,
@@ -207,7 +258,7 @@ class _ChatRoomViewState extends State<ChatRoomView> {
         'MessageText': _controller.text,
         'SentAt': Timestamp.now(),
         'Color': Colors.green.value,
-        'ImageUrl': 'assets/images/avatar/avatar-3.png', // Update this based on your app's logic
+        'ImageUrl': imageUrl, // Use imageUrl from the user's document
       });
 
       _controller.clear();

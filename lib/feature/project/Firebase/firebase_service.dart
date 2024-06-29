@@ -18,33 +18,37 @@ class FirebaseService {
       return [];
     }
   }
+Future<void> addProject({
+  required String name,
+  required String description,
+  required String deadline,
+  required List<String> projectTasks,
+  required List<String> teamMembers,
+  required String adminId,
+}) async {
+  try {
+    String collectionPath = 'projects';
+    DocumentReference projectRef = _firestore.collection(collectionPath).doc();
+    String projectId = projectRef.id;
 
-  Future<void> addProject({
-    required String name,
-    required String description,
-    required String deadline,
-    required List<String> projectTasks,
-    required List<String> teamMembers,
-    required String adminId,
-  }) async {
-    try {
-      String collectionPath = 'projects';
-      Map<String, dynamic> projectData = {
-        'name': name,
-        'description': description,
-        'deadline': deadline,
-        'projectTasks': projectTasks,
-        'teamMembers': teamMembers,
-        'adminId': adminId,
-        'timestamp': FieldValue.serverTimestamp(),
-      };
+    Map<String, dynamic> projectData = {
+      'projectId': projectId, // Adding the projectId to the project data
+      'name': name,
+      'description': description,
+      'deadline': deadline,
+      'projectTasks': projectTasks,
+      'teamMembers': teamMembers,
+      'adminId': adminId,
+      'timestamp': FieldValue.serverTimestamp(),
+    };
 
-      await _firestore.collection(collectionPath).add(projectData);
-    } catch (e) {
-      print('Error adding project: $e');
-      throw e;
-    }
+    await projectRef.set(projectData);
+  } catch (e) {
+    print('Error adding project: $e');
+    throw e;
   }
+}
+
 
   Future<DocumentSnapshot<Map<String, dynamic>>> getProjectById(String projectId) async {
     try {
