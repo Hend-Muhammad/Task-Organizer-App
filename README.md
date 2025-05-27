@@ -6,10 +6,19 @@ A productivity-focused mobile application designed to streamline task and projec
 🎥 [Watch the Demo Video](https://drive.google.com/file/d/1ZiCZLx67zjQYsRVkT8NoOKPUGVOdu1pp/view)  
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/1.png" width="250"/>
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/2.png" width="250"/>
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/3.png" width="250"/>
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/0.png" width="200" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/1.png" width="200" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/2.png" width="200" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/3.png" width="200" />
 </p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/4.png" width="200" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/5.png" width="200" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/6.png" width="200" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/7.png" width="200" />
+</p>
+
 
 ---
 
