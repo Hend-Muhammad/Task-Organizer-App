@@ -5,40 +5,28 @@ A productivity-focused mobile application designed to streamline task and projec
 ## 📽 Demo
 🎥 [Watch the Demo Video](https://drive.google.com/file/d/1ZiCZLx67zjQYsRVkT8NoOKPUGVOdu1pp/view)  
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/0.png" width="150" />
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/1.png" width="150" />
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/2.png" width="150" />
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/3.png" width="150" />
-</p>
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/4.png" width="150" />
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/5.png" width="150" />
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/6.png" width="150" />
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/8.png" width="150" />
-</p>
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/16.png" width="150" />
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/17.png" width="150" />
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/18.png" width="150" />
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/19.png" width="150" />
-</p>
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/20.png" width="150" />
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/21.png" width="150" />
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/22.png" width="150" />
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/23.png" width="150" />
-</p>
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/24.png" width="150" />
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/26.png" width="150" />
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/25.png" width="150" />
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/27.png" width="150" />
-</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/0.png" width="160" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/1.png" width="160" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/2.png" width="160" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/3.png" width="160" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/4.png" width="160" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/5.png" width="160" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/6.png" width="160" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/8.png" width="160" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/16.png" width="160" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/17.png" width="160" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/18.png" width="160" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/19.png" width="160" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/20.png" width="160" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/21.png" width="160" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/22.png" width="160" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/23.png" width="160" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/24.png" width="160" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/26.png" width="160" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/25.png" width="160" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/27.png" width="160" />
+</div>
 
 ---
 
