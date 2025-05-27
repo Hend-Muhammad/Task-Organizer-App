@@ -14,7 +14,7 @@ class ProjectCard extends StatefulWidget {
 
 class _ProjectCardState extends State<ProjectCard> {
   List<String> memberImages = [];
-  double progress = 0.0;
+  double progress = 0.4; // Set default progress to 40%
 
   @override
   void initState() {
@@ -41,9 +41,10 @@ class _ProjectCardState extends State<ProjectCard> {
 
   Future<void> _calculateProgress() async {
     if (widget.project.projectTasks == null || widget.project.projectTasks!.isEmpty) {
+      // If no tasks, the default progress remains at 40%
       if (mounted) {
         setState(() {
-          progress = 0.0;
+          progress = 0.4; // Default progress when there are no tasks
         });
       }
       return;
@@ -62,7 +63,7 @@ class _ProjectCardState extends State<ProjectCard> {
 
     if (mounted) {
       setState(() {
-        progress = totalTasks > 0 ? completedTasks / totalTasks : 0.0;
+        progress = totalTasks > 0 ? completedTasks / totalTasks : 0.4; // Default to 40% if no tasks
       });
     }
   }

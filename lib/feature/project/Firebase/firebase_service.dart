@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirebaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+Future<Map<String, dynamic>?> getUserById(String userId) async {
+    DocumentSnapshot userDoc = await _firestore.collection('users').doc(userId).get();
+    return userDoc.data() as Map<String, dynamic>?;
+  }
   Future<List<Map<String, dynamic>>> getProjects() async {
     try {
       QuerySnapshot querySnapshot = await _firestore.collection('projects')
