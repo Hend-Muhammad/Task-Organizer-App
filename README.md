@@ -1,16 +1,60 @@
-# task_app
+# 🧠 Productivity App
 
-A new Flutter project.
+A productivity-focused mobile application designed to streamline task and project management, enable real-time team communication, and boost overall performance — all in one place.
 
-## Getting Started
+## 📽 Demo
+🎥 [Watch the Demo Video](https://drive.google.com/file/d/1ZiCZLx67zjQYsRVkT8NoOKPUGVOdu1pp/view)  
 
-This project is a starting point for a Flutter application.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/1.png" width="250"/>
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/2.png" width="250"/>
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/3.png" width="250"/>
+</p>
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## ✨ Key Features
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- ✅ **Task Management**  
+  Create, update, assign, and organize your tasks with ease.
+
+- 📁 **Project Management**  
+  Create shared projects for team members, manage workflows, and track progress.
+
+- 💬 **Real-time Chat & Team Collaboration**  
+  Invite teammates to projects and collaborate instantly through in-app chat.
+
+- 📊 **Performance Monitoring**  
+  Visualize team and personal productivity using progress indicators and stats.
+
+- ⏰ **Reminders & Notifications**  
+  Get smart reminders and stay up to date with real-time notifications.
+
+---
+
+## 👥 Team Collaboration
+
+- Invite team members to join your workspace  
+- Collaborate on shared projects and tasks  
+- Communicate instantly via integrated chat for each project
+
+---
+
+## 🛠 Tech Stack
+
+- **Flutter (Dart)** – Mobile app development  
+- **Firebase** – Auth, Firestore (database), Cloud Messaging  
+- **State Management:** Riverpod / Provider
+
+---
+
+## 📌 About
+
+This app was built to explore real-world use cases in team productivity, collaboration, and project execution. It demonstrates advanced features such as authentication, real-time updates, and chat functionality in a Flutter + Firebase environment.
+
+---
+
+## 🚀 Author
+
+**Hend Muhammad**  
+• [GitHub](https://github.com/Hend-Muhammad)
