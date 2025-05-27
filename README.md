@@ -16,14 +16,14 @@ A productivity-focused mobile application designed to streamline task and projec
   <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/4.png" width="150" />
   <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/5.png" width="150" />
   <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/6.png" width="150" />
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/16.png" width="150" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/8.png" width="150" />
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/17.png" width="150" />
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/5.png" width="18" />
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/6.png" width="19" />
-  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/16.png" width="20" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/16.png" width="150" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/17.png" width="18" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/18.png" width="19" />
+  <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/19.png" width="20" />
 </p>
 
 <p align="center">
@@ -38,6 +38,7 @@ A productivity-focused mobile application designed to streamline task and projec
   <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/26.png" width="150" />
   <img src="https://raw.githubusercontent.com/Hend-Muhammad/Task-Organizer-App/main/assets/screenshots/27.png" width="150" />
 </p>
+
 ---
 
 ## ✨ Key Features
